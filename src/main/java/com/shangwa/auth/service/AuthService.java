@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.shangwa.auth.entity.User;
 import com.shangwa.auth.lib.AuthPayload;
+import com.shangwa.auth.lib.AuthUser;
 import com.shangwa.auth.lib.LoginCredidentials;
 
 @Service
@@ -27,7 +28,7 @@ public class AuthService {
         Optional<User> user =userService.getUser(creds.email, creds.password);
         
         if (user.isPresent()) {
-            res.user = user.get();
+            res.user = new AuthUser(user.get());
             res.token = "";
         }
 

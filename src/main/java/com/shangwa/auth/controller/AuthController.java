@@ -24,7 +24,13 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthPayload> login(@RequestBody LoginCredidentials creds) {
-        return ResponseEntity.ok(auth.login(creds));
+        AuthPayload res =  auth.login(creds);
+
+        if (res.isNull()) {
+            return ResponseEntity.notFound().build();
+        } 
+
+        return ResponseEntity.ok(res);
     }
 
     @PostMapping("/create/account")
