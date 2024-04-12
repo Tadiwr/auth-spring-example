@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.shangwa.auth.entity.User;
 import com.shangwa.auth.lib.AuthPayload;
-import com.shangwa.auth.lib.AuthUser;
 import com.shangwa.auth.lib.LoginCredidentials;
 
 @Service
