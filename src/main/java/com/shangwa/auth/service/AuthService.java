@@ -20,19 +20,19 @@ public class AuthService {
     private JwtService jwtService;
 
     public AuthPayload create(User user) {
-        User newUser = userService.addUser(user);
+        userService.addUser(user);
         String token = jwtService.issueToken(user);
 
-        return new AuthPayload(newUser, token);
+        return new AuthPayload(token, "Account created successfully");
     }
 
     public AuthPayload login(LoginCredidentials creds) {
-        AuthPayload res = new AuthPayload(null, null);
+        AuthPayload res = new AuthPayload(null, "Invalid credidentials");
         Optional<User> user =userService.getUser(creds.email, creds.password);
         
         if (user.isPresent()) {
-            res.user = new AuthUser(user.get());
-            res.token = "";
+            res.token = jwtService.issueToken(user.get());
+            res.message = "Logged in successfuly";
         }
 
         return res;

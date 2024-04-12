@@ -7,11 +7,9 @@ import com.shangwa.auth.entity.User;
 import com.shangwa.auth.lib.AuthPayload;
 import com.shangwa.auth.lib.LoginCredidentials;
 import com.shangwa.auth.service.AuthService;
-import com.shangwa.auth.service.JwtService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -29,7 +27,7 @@ public class AuthController {
     public ResponseEntity<AuthPayload> login(@RequestBody LoginCredidentials creds) {
         AuthPayload res =  auth.login(creds);
 
-        if (res.isNull()) {
+        if (res.token == null) {
             return ResponseEntity.notFound().build();
         } 
 
