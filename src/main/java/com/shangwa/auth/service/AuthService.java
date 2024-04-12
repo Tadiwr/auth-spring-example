@@ -16,9 +16,12 @@ public class AuthService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private JwtService jwtService;
+
     public AuthPayload create(User user) {
         User newUser = userService.addUser(user);
-        String token = "";
+        String token = jwtService.issueToken(user);
 
         return new AuthPayload(newUser, token);
     }

@@ -5,6 +5,7 @@ import com.shangwa.auth.entity.User;
 public class AuthPayload {
     public AuthUser user;
     public String token;
+    public String message = "";
 
     public AuthPayload(User user, String token) {
         this.user = new AuthUser(user);

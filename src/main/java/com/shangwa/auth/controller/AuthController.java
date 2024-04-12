@@ -7,9 +7,11 @@ import com.shangwa.auth.entity.User;
 import com.shangwa.auth.lib.AuthPayload;
 import com.shangwa.auth.lib.LoginCredidentials;
 import com.shangwa.auth.service.AuthService;
+import com.shangwa.auth.service.JwtService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -17,7 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-    
+
+
 
     @Autowired
     private AuthService auth;
