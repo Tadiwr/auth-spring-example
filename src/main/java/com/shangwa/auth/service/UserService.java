@@ -21,4 +21,8 @@ public class UserService {
     public Optional<User> getUser(String email, String password) {
         return userRepo.findDistinctByEmailAndPassword(email, password);
     }
+
+    public boolean userExists(String email, String password) {
+        return getUser(email, password).isPresent();
+    }
 }
