@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class JwtAuthInterceptor implements HandlerInterceptor {
 
+    // FIX: Find a way to autowire this instead of passing it as a constructor
     private JwtService jwtService;
 
     public JwtAuthInterceptor(JwtService jwtService2) {
