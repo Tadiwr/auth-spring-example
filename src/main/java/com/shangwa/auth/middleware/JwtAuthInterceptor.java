@@ -1,8 +1,6 @@
 package com.shangwa.auth.middleware;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.shangwa.auth.entity.User;
