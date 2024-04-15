@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.shangwa.auth.entity.User;
 import com.shangwa.auth.lib.AuthPayload;
 import com.shangwa.auth.lib.LoginCredidentials;
+import com.shangwa.auth.lib.exceptions.BadAuthorizationHeader;
 
 @Service
 public class AuthService {
@@ -35,6 +36,10 @@ public class AuthService {
         }
 
         return res;
+    }
+
+    public Object verifyRequest(String authToken) throws BadAuthorizationHeader {
+        return jwtService.verifyToken(authToken);
     }
 
 }
