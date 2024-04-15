@@ -36,6 +36,7 @@ public class JwtService {
     }
     
 
+    /** Generates a JWT token for a user */
     public String issueToken(User user) {
     
         String token = Jwts.builder()
@@ -48,6 +49,19 @@ public class JwtService {
         return token;
     }
 
+    /** Gets the User who is the bearer of the token based on the claims in the JWT payload
+     * 
+     * @returns User
+     */
+    private User getTokenBearer(Claims claims) {
+        Long subId = Long.parseLong(claims.get("sub", String.class));
+        User user = userRepo.findById(subId).get();
+        return user;
+    }
+
+    /** Attempts to verify a token and return the `User` bearing the token
+     * @throws BadAuthorizationHeader if the token is missing or is invalid
+     */
     public User verifyToken(String token) throws BadAuthorizationHeader {
 
         try {
@@ -56,11 +70,8 @@ public class JwtService {
             .build()
             .parse(token).getPayload();
 
-            // Cast the payload to Claims
             Claims claims = (Claims) payload;
-            Long subId = Long.parseLong(claims.get("sub", String.class));
-            User user = userRepo.findById(subId).get();
-            return user;
+            return getTokenBearer(claims);
             
         } catch (Exception e) {
             throw new BadAuthorizationHeader();
