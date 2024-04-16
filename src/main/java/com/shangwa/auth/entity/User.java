@@ -15,14 +15,24 @@ public class User {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id = null;
+    private Long id;
 
     @Column(name = "email", unique = true, nullable = false)
-    private String email = null;
+    private String email;
 
     @Column(name = "name", nullable = false)
-    private String name = null;
+    private String name;
 
     @Column(name = "password", nullable = false)
-    private String password = null;
+    private String password;
+
+    /** Returns true if the user objects passes the presence check */
+    public boolean precenceCheck() {
+
+        boolean email_present = (email != null) && (email != "");
+        boolean password_present = (password != null) && (password != "");
+        boolean name_present = (name != null) && (name != "");
+
+        return email_present && password_present && name_present;
+    }
 }
