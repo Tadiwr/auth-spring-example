@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.shangwa</groupId>
 	<artifactId>auth</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1.1</version>
 	<name>auth</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
@@ -96,6 +96,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>auth-server.0.1.2</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
