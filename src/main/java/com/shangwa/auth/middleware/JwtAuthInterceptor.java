@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class JwtAuthInterceptor implements HandlerInterceptor {
 
+    // FIX: Find a way to autowire this instead of passing it as a constructor
     private JwtService jwtService;
 
     public JwtAuthInterceptor(JwtService jwtService2) {
@@ -23,21 +24,27 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
 
         String authorization = request.getHeader("Authorization");
 
-        if (authorization == null || !authorization.startsWith("Bearer X ")) {
+        if (authorization == null || !authorization.startsWith("Bearer ")) {
             response.setStatus(401); // Return Unauthorized http code
             return false;
         }
 
-        String token = authorization.substring(9);
+        String token = authorization.substring(7);
+        System.out.println(token);
         
         try {
+
             User loggedInUser = jwtService.verifyToken(token);
+            System.out.println(loggedInUser.getName());
             request.setAttribute("user", loggedInUser);
-            return true;
+
         } catch(BadAuthorizationHeader e) {
+            
             response.setStatus(401); 
             return false;
         }
+
+        return true;
 
     }
 
