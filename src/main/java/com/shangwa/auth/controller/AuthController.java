@@ -49,6 +49,7 @@ public class AuthController {
     public ResponseEntity<AuthPayload> createAccount(@RequestBody User user) {
 
         AuthPayload payload = new AuthPayload(null, null);
+
         ValidationResult validationRes = validationHelper(user);
 
         if (!validationRes.passed) {
