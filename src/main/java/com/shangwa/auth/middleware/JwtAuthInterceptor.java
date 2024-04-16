@@ -5,7 +5,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.shangwa.auth.entity.User;
 import com.shangwa.auth.lib.exceptions.UnAuthorisedException;
-import com.shangwa.auth.service.JwtTokenUtilService;
+import com.shangwa.auth.service.implimentations.JwtTokenServiceImpl;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,9 +13,9 @@ import jakarta.servlet.http.HttpServletResponse;
 public class JwtAuthInterceptor implements HandlerInterceptor {
 
     // FIX: Find a way to autowire this instead of passing it as a constructor
-    private JwtTokenUtilService jwtService;
+    private JwtTokenServiceImpl jwtService;
 
-    public JwtAuthInterceptor(JwtTokenUtilService jwtService2) {
+    public JwtAuthInterceptor(JwtTokenServiceImpl jwtService2) {
         this.jwtService = jwtService2;
     }
 

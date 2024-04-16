@@ -1,4 +1,4 @@
-package com.shangwa.auth.service;
+package com.shangwa.auth.service.implimentations;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
@@ -19,7 +19,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
 @Service
-public class JwtTokenUtilService implements TokenUtilService {
+public class JwtTokenServiceImpl implements TokenUtilService {
 
     @Autowired
     private UsersReposity userRepo;

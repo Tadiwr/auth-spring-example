@@ -1,4 +1,4 @@
-package com.shangwa.auth.service;
+package com.shangwa.auth.service.implimentations;
 
 import java.util.Optional;
 
@@ -7,9 +7,10 @@ import org.springframework.stereotype.Service;
 
 import com.shangwa.auth.entity.User;
 import com.shangwa.auth.repository.UsersReposity;
+import com.shangwa.auth.service.interfaces.UserService;
 
 @Service
-public class UserService {
+public class UserServiceImpl implements UserService {
 
     @Autowired
     private UsersReposity userRepo;

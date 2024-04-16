@@ -9,9 +9,9 @@ import com.shangwa.auth.entity.User;
 import com.shangwa.auth.lib.AuthPayload;
 import com.shangwa.auth.lib.LoginCredidentials;
 import com.shangwa.auth.lib.exceptions.UnAuthorisedException;
-import com.shangwa.auth.service.UserService;
 import com.shangwa.auth.service.interfaces.TokenAuthService;
 import com.shangwa.auth.service.interfaces.TokenUtilService;
+import com.shangwa.auth.service.interfaces.UserService;
 
 @Service
 public class TokenAuthServiceImpl implements TokenAuthService {
