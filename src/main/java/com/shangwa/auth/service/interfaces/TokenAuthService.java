@@ -6,6 +6,7 @@ import com.shangwa.auth.entity.User;
 import com.shangwa.auth.lib.AuthPayload;
 import com.shangwa.auth.lib.LoginCredidentials;
 import com.shangwa.auth.lib.exceptions.UnAuthorisedException;
+import com.shangwa.auth.lib.exceptions.UserAlreadyExistsException;
 
 /** Defines a interface for a Authentication service using tokens */
 @Service
@@ -18,7 +19,7 @@ public interface TokenAuthService {
     public User verifyRequest(String authToken) throws UnAuthorisedException;
 
     /** creates a user and returns an auth payload */
-    public AuthPayload createUser(User user);
+    public AuthPayload createUser(User user) throws UserAlreadyExistsException;
 
     
 }

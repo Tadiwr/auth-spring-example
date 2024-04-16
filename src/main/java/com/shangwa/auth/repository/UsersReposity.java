@@ -12,5 +12,5 @@ import com.shangwa.auth.entity.User;
 @Repository
 public interface UsersReposity extends CrudRepository<User, Long> {
     Optional<User> findDistinctByEmailAndPassword(String email, String password);
-    List<User> findByEmail(String email);
+    Optional<User> findDistinctByEmail(String email);
 }
