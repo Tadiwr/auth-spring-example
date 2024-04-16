@@ -46,4 +46,7 @@ public class TokenAuthServiceImpl implements TokenAuthService {
         return tokenService.verifyToken(authToken);
     }
 
+    public boolean userExists(String email) {
+        return userService.userExists(email);
+    }
 }

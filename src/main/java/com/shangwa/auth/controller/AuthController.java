@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.shangwa.auth.entity.User;
 import com.shangwa.auth.lib.AuthPayload;
 import com.shangwa.auth.lib.LoginCredidentials;
+import com.shangwa.auth.lib.Validator;
 import com.shangwa.auth.lib.exceptions.UnAuthorisedException;
 import com.shangwa.auth.lib.exceptions.UserAlreadyExistsException;
 import com.shangwa.auth.service.implimentations.TokenAuthServiceImpl;
@@ -14,6 +15,7 @@ import com.shangwa.auth.service.interfaces.TokenAuthService;
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -45,17 +47,27 @@ public class AuthController {
 
     @PostMapping("/create/account")
     public ResponseEntity<AuthPayload> createAccount(@RequestBody User user) {
+
         AuthPayload payload = new AuthPayload(null, null);
+        ValidationResult validationRes = validationHelper(user);
+
+        if (!validationRes.passed) {
+            payload.message = validationRes.message;
+            return ResponseEntity.internalServerError().body(payload);
+        }
 
         try {
             payload = auth.createUser(user);
         } catch (Exception e) {
+
             if (e instanceof UserAlreadyExistsException) {
                 payload.message = e.getMessage();
+                return ResponseEntity.badRequest().body(payload);
             }
 
-            return ResponseEntity.badRequest().body(payload);
-            
+            payload.message = "An Error occured";
+            return ResponseEntity.internalServerError().body(payload);
+
         }
         
 
@@ -74,6 +86,24 @@ public class AuthController {
 
         return auth.verifyRequest(token);
     }
+
+    private ValidationResult validationHelper(User user) {
+        ValidationResult res = new ValidationResult(true, "");
+
+        if (!user.precenceCheck()) {
+            res.message = "One of the fields has an null value or empty string";
+            res.passed = false;
+            return res;
+        }
+
+        if (!Validator.validateEmail(user.getEmail())) {
+            res.message = "Invalid Email";
+            res.passed = false;
+            return res;
+        }
+
+        return res;
+    }
     
 
 }
@@ -84,6 +114,17 @@ class AuthReqHeaders {
     AuthReqHeaders(String token) {
         this.token = token;
     }
+}
+
+class ValidationResult {
+    boolean passed;
+    String message;
+
+    ValidationResult(boolean passed, String message) {
+        this.passed = passed;
+        this.message = message;
+    }
+
 }
 
 
