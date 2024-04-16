@@ -48,11 +48,11 @@ public class AuthController {
     public Object getStuff(HttpServletRequest request) throws BadAuthorizationHeader {
         String authorization = request.getHeader("Authorization");
 
-        if (authorization == null || !authorization.startsWith("Bearer X ")) {
+        if (authorization == null || !authorization.startsWith("Bearer ")) {
             return new ResponseEntity<>("UnAuthorised Request", HttpStatus.UNAUTHORIZED);
         }
 
-        String token = authorization.substring(9); // Removes the 'Bearer X' string
+        String token = authorization.substring(7); // Removes the 'Bearer' string
 
         return auth.verifyRequest(token);
     }
