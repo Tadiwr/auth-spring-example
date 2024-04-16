@@ -11,7 +11,7 @@ import com.shangwa.auth.lib.LoginCredidentials;
 import com.shangwa.auth.lib.exceptions.BadAuthorizationHeader;
 
 @Service
-public class AuthService {
+public class AuthServiceImpl {
     
     @Autowired
     private UserService userService;

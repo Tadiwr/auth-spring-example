@@ -7,7 +7,7 @@ import com.shangwa.auth.entity.User;
 import com.shangwa.auth.lib.AuthPayload;
 import com.shangwa.auth.lib.LoginCredidentials;
 import com.shangwa.auth.lib.exceptions.BadAuthorizationHeader;
-import com.shangwa.auth.service.AuthService;
+import com.shangwa.auth.service.AuthServiceImpl;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class AuthController {
 
     @Autowired
-    private AuthService auth;
+    private AuthServiceImpl auth;
 
     @PostMapping("/login")
     public ResponseEntity<AuthPayload> login(@RequestBody LoginCredidentials creds) {

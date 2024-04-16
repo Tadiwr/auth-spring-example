@@ -15,6 +15,7 @@ import com.shangwa.auth.repository.UsersReposity;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
 @Service
@@ -42,7 +43,7 @@ public class JwtService {
         .subject(user.getId().toString())
         .claim("name", user.getName())
         .issuedAt(new Date())
-        .signWith(getSecretKey())
+        .signWith(SignatureAlgorithm.HS512, jwtKey)
         .compact();
 
         return token;
