@@ -1,4 +1,4 @@
-package com.shangwa.auth.service;
+package com.shangwa.auth.service.implimentations;
 
 import java.util.Optional;
 
@@ -8,20 +8,23 @@ import org.springframework.stereotype.Service;
 import com.shangwa.auth.entity.User;
 import com.shangwa.auth.lib.AuthPayload;
 import com.shangwa.auth.lib.LoginCredidentials;
-import com.shangwa.auth.lib.exceptions.BadAuthorizationHeader;
+import com.shangwa.auth.lib.exceptions.UnAuthorisedException;
+import com.shangwa.auth.service.UserService;
+import com.shangwa.auth.service.interfaces.TokenAuthService;
+import com.shangwa.auth.service.interfaces.TokenUtilService;
 
 @Service
-public class AuthServiceImpl {
+public class TokenAuthServiceImpl implements TokenAuthService {
     
     @Autowired
     private UserService userService;
 
     @Autowired
-    private JwtService jwtService;
+    private TokenUtilService tokenService;
 
-    public AuthPayload create(User user) {
+    public AuthPayload createUser(User user) {
         userService.addUser(user);
-        String token = jwtService.issueToken(user);
+        String token = tokenService.issueToken(user);
 
         return new AuthPayload(token, "Account created successfully");
     }
@@ -31,15 +34,15 @@ public class AuthServiceImpl {
         Optional<User> user =userService.getUser(creds.email, creds.password);
         
         if (user.isPresent()) {
-            res.token = jwtService.issueToken(user.get());
+            res.token = tokenService.issueToken(user.get());
             res.message = "Logged in successfuly";
         }
 
         return res;
     }
 
-    public Object verifyRequest(String authToken) throws BadAuthorizationHeader {
-        return jwtService.verifyToken(authToken);
+    public User verifyRequest(String authToken) throws UnAuthorisedException {
+        return tokenService.verifyToken(authToken);
     }
 
 }

@@ -4,8 +4,8 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.shangwa.auth.entity.User;
-import com.shangwa.auth.lib.exceptions.BadAuthorizationHeader;
-import com.shangwa.auth.service.JwtService;
+import com.shangwa.auth.lib.exceptions.UnAuthorisedException;
+import com.shangwa.auth.service.JwtTokenUtilService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,9 +13,9 @@ import jakarta.servlet.http.HttpServletResponse;
 public class JwtAuthInterceptor implements HandlerInterceptor {
 
     // FIX: Find a way to autowire this instead of passing it as a constructor
-    private JwtService jwtService;
+    private JwtTokenUtilService jwtService;
 
-    public JwtAuthInterceptor(JwtService jwtService2) {
+    public JwtAuthInterceptor(JwtTokenUtilService jwtService2) {
         this.jwtService = jwtService2;
     }
 
@@ -38,7 +38,7 @@ public class JwtAuthInterceptor implements HandlerInterceptor {
             System.out.println(loggedInUser.getName());
             request.setAttribute("user", loggedInUser);
 
-        } catch(BadAuthorizationHeader e) {
+        } catch(UnAuthorisedException e) {
             
             response.setStatus(401); 
             return false;
