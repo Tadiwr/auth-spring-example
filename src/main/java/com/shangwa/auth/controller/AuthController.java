@@ -7,6 +7,7 @@ import com.shangwa.auth.entity.User;
 import com.shangwa.auth.lib.AuthPayload;
 import com.shangwa.auth.lib.LoginCredidentials;
 import com.shangwa.auth.lib.exceptions.UnAuthorisedException;
+import com.shangwa.auth.lib.exceptions.UserAlreadyExistsException;
 import com.shangwa.auth.service.implimentations.TokenAuthServiceImpl;
 import com.shangwa.auth.service.interfaces.TokenAuthService;
 
@@ -14,7 +15,9 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity.HeadersBuilder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,7 +45,21 @@ public class AuthController {
 
     @PostMapping("/create/account")
     public ResponseEntity<AuthPayload> createAccount(@RequestBody User user) {
-        return ResponseEntity.ok(auth.createUser(user));
+        AuthPayload payload = new AuthPayload(null, null);
+
+        try {
+            payload = auth.createUser(user);
+        } catch (Exception e) {
+            if (e instanceof UserAlreadyExistsException) {
+                payload.message = e.getMessage();
+            }
+
+            return ResponseEntity.badRequest().body(payload);
+            
+        }
+        
+
+        return ResponseEntity.ok(payload);
     }
 
     @GetMapping("/getUserInfo")
