@@ -6,8 +6,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.shangwa.auth.entity.User;
 import com.shangwa.auth.lib.AuthPayload;
 import com.shangwa.auth.lib.LoginCredidentials;
-import com.shangwa.auth.lib.exceptions.BadAuthorizationHeader;
-import com.shangwa.auth.service.AuthServiceImpl;
+import com.shangwa.auth.lib.exceptions.UnAuthorisedException;
+import com.shangwa.auth.service.implimentations.TokenAuthServiceImpl;
+import com.shangwa.auth.service.interfaces.TokenAuthService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -26,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class AuthController {
 
     @Autowired
-    private AuthServiceImpl auth;
+    private TokenAuthService auth;
 
     @PostMapping("/login")
     public ResponseEntity<AuthPayload> login(@RequestBody LoginCredidentials creds) {
@@ -41,11 +42,11 @@ public class AuthController {
 
     @PostMapping("/create/account")
     public ResponseEntity<AuthPayload> createAccount(@RequestBody User user) {
-        return ResponseEntity.ok(auth.create(user));
+        return ResponseEntity.ok(auth.createUser(user));
     }
 
     @GetMapping("/getUserInfo")
-    public Object getStuff(HttpServletRequest request) throws BadAuthorizationHeader {
+    public Object getStuff(HttpServletRequest request) throws UnAuthorisedException {
         String authorization = request.getHeader("Authorization");
 
         if (authorization == null || !authorization.startsWith("Bearer ")) {

@@ -1,6 +1,6 @@
 package com.shangwa.auth.lib.exceptions;
 
-public class BadAuthorizationHeader extends Exception {
+public class UnAuthorisedException extends Exception {
     
     @Override
     public String getMessage() {

@@ -7,13 +7,12 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.shangwa.auth.middleware.JwtAuthInterceptor;
-
-import com.shangwa.auth.service.JwtService;
+import com.shangwa.auth.service.implimentations.JwtTokenServiceImpl;
 @Configuration
 public class InterceptorsConfig implements WebMvcConfigurer {
 
     @Autowired
-    private JwtService jwtService;
+    private JwtTokenServiceImpl jwtService;
 
     @Override
     public void addInterceptors(@NonNull InterceptorRegistry registry) {
