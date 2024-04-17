@@ -25,4 +25,7 @@ public class User {
 
     @Column(name = "password", nullable = false)
     private String password;
+
+    @Column
+    private boolean isVerified = false;
 }
