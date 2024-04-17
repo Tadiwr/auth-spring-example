@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RestController
@@ -37,12 +39,23 @@ public class AuthController {
             return ResponseEntity.notFound().build();
         } 
 
+        if (res.token == "-1") {
+            return ResponseEntity.internalServerError().build();
+        }
+
         return ResponseEntity.ok(res);
     }
 
     @PostMapping("/create/account")
     public ResponseEntity<AuthPayload> createAccount(@RequestBody User user) {
-        return ResponseEntity.ok(auth.createUser(user));
+
+        AuthPayload payload = auth.createUser(user);
+
+        if (payload.message == null) {
+            return ResponseEntity.internalServerError().build();
+        }
+
+        return ResponseEntity.ok(payload);
     }
 
     @GetMapping("/getUserInfo")
@@ -57,6 +70,18 @@ public class AuthController {
 
         return auth.verifyRequest(token);
     }
+
+    @GetMapping("/email/verify")
+    public String getMethodName(@RequestParam String token) {
+
+        if (auth.verifyUserEmail(token)) {
+            return "Email verified!";
+        } else {
+            return "Email Verification link is not valid anymore";
+        }
+
+    }
+    
     
 
 }

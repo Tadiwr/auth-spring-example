@@ -20,5 +20,7 @@ public interface TokenAuthService {
     /** creates a user and returns an auth payload */
     public AuthPayload createUser(User user);
 
+    public boolean verifyUserEmail(String token);
+
     
 }

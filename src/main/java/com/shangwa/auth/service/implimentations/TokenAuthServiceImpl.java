@@ -9,9 +9,12 @@ import com.shangwa.auth.entity.User;
 import com.shangwa.auth.lib.AuthPayload;
 import com.shangwa.auth.lib.LoginCredidentials;
 import com.shangwa.auth.lib.exceptions.UnAuthorisedException;
+import com.shangwa.auth.service.interfaces.EmailVerificationService;
 import com.shangwa.auth.service.interfaces.TokenAuthService;
 import com.shangwa.auth.service.interfaces.TokenUtilService;
 import com.shangwa.auth.service.interfaces.UserService;
+
+import jakarta.mail.MessagingException;
 
 @Service
 public class TokenAuthServiceImpl implements TokenAuthService {
@@ -22,20 +25,49 @@ public class TokenAuthServiceImpl implements TokenAuthService {
     @Autowired
     private TokenUtilService tokenService;
 
-    public AuthPayload createUser(User user) {
-        userService.addUser(user);
-        String token = tokenService.issueToken(user);
+    @Autowired
+    private EmailVerificationService emailVerfication;
 
-        return new AuthPayload(token, "Account created successfully");
+    public AuthPayload createUser(User user) {
+
+        String emailToken = emailVerfication.createEmailVerificationToken(user);
+
+        try {
+            emailVerfication.sendTokenToUserEmail(emailToken, user);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            return new AuthPayload(null, null);
+        }
+
+        userService.addUser(user);
+
+        return new AuthPayload(null, "Verify Your Account");
     }
 
     public AuthPayload login(LoginCredidentials creds) {
         AuthPayload res = new AuthPayload(null, "Invalid credidentials");
-        Optional<User> user =userService.getUser(creds.email, creds.password);
+        Optional<User> user = userService.getUser(creds.email, creds.password);
         
-        if (user.isPresent()) {
-            res.token = tokenService.issueToken(user.get());
+        if (user.isEmpty()) {
+            return res;
+        }
+        User realUser = user.get();
+
+        if (user.get().isVerified()) {
+            res.token = tokenService.issueToken(realUser);
             res.message = "Logged in successfuly";
+            return res;
+        } 
+            
+        String emailVerificationToken = emailVerfication.createEmailVerificationToken(realUser);
+        
+        try {
+            emailVerfication.sendTokenToUserEmail(emailVerificationToken, realUser);
+            res.token="NOTVERIFIED";
+            res.message = "Sent Email for verification";
+        } catch (Exception e) {
+            e.printStackTrace();
+            res.token = "-1";
         }
 
         return res;
@@ -43,6 +75,23 @@ public class TokenAuthServiceImpl implements TokenAuthService {
 
     public User verifyRequest(String authToken) throws UnAuthorisedException {
         return tokenService.verifyToken(authToken);
+    }
+
+    public boolean verifyUserEmail(String token) {
+        Optional<User> user = emailVerfication.verifyEmailToken(token);
+        
+        if(user.isPresent()) {
+
+            if (user.get().isVerified()) {
+                return false;
+            }
+
+            user.get().setVerified(true);
+            userService.saveUser(user.get());
+            return true;
+        }
+
+        return false;
     }
 
 }

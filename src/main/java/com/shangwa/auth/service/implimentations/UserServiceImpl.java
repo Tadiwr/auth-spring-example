@@ -26,4 +26,8 @@ public class UserServiceImpl implements UserService {
     public boolean userExists(String email, String password) {
         return getUser(email, password).isPresent();
     }
+
+    public void saveUser(User user) {
+        userRepo.save(user);
+    }
 }
