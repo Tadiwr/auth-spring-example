@@ -37,6 +37,10 @@ public class AuthController {
             return ResponseEntity.notFound().build();
         } 
 
+        if (res.token == "-1") {
+            return ResponseEntity.internalServerError().build();
+        }
+
         return ResponseEntity.ok(res);
     }
 

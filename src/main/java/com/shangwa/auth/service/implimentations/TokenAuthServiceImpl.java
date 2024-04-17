@@ -28,7 +28,7 @@ public class TokenAuthServiceImpl implements TokenAuthService {
 
     public AuthPayload createUser(User user) {
         emailVerfication.createEmailVerificationToken(user);
-        
+
         userService.addUser(user);
         String token = tokenService.issueToken(user);
 
@@ -41,8 +41,24 @@ public class TokenAuthServiceImpl implements TokenAuthService {
         Optional<User> user =userService.getUser(creds.email, creds.password);
         
         if (user.isPresent()) {
-            res.token = tokenService.issueToken(user.get());
-            res.message = "Logged in successfuly";
+
+            User realUser = user.get();
+
+            if (user.get().isVerified()) {
+                res.token = tokenService.issueToken(realUser);
+                res.message = "Logged in successfuly";
+            } else {
+                
+                String emailVerificationToken = emailVerfication.createEmailVerificationToken(realUser);
+                
+                try {
+                    emailVerfication.sendTokenToUserEmail(emailVerificationToken, realUser);
+                    res.message = "Sent Email for verification";
+                } catch (Exception e) {
+                    res.token = "-1";
+                }
+            }
+
         }
 
         return res;

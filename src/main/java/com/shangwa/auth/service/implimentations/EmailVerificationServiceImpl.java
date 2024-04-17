@@ -4,14 +4,18 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 import javax.crypto.SecretKey;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.shangwa.auth.entity.User;
+import com.shangwa.auth.service.EmailService;
 import com.shangwa.auth.service.interfaces.EmailVerificationService;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.mail.MessagingException;
 
 
 @Service
@@ -21,8 +25,10 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
     @Value("${email.verifcation.key}")
     private String keyStr;
 
-    @Override
-    public String createEmailVerificationToken(User user) {
+    @Autowired
+    private EmailService emailService; 
+
+    public String createEmailVerificationToken(User user)  {
 
         // A second has 1000 milliseconds * 1800 seconds in thirty minutes
         Long expiryDateTime = System.currentTimeMillis() + (1000 * 1800);
@@ -44,13 +50,10 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
         return token;
     }
 
-    @Override
-    public void sendTokenToUserEmail(String token, User user) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'sendTokenToUserEmail'");
+    public void sendTokenToUserEmail(String token, User user) throws MessagingException {
+        emailService.sendVerficationEmail(token, user);
     }
 
-    @Override
     public boolean verifyEmailToken(String token) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'verifyEmailToken'");
