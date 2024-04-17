@@ -9,6 +9,7 @@ import com.shangwa.auth.entity.User;
 import com.shangwa.auth.lib.AuthPayload;
 import com.shangwa.auth.lib.LoginCredidentials;
 import com.shangwa.auth.lib.exceptions.UnAuthorisedException;
+import com.shangwa.auth.service.interfaces.EmailVerificationService;
 import com.shangwa.auth.service.interfaces.TokenAuthService;
 import com.shangwa.auth.service.interfaces.TokenUtilService;
 import com.shangwa.auth.service.interfaces.UserService;
@@ -22,9 +23,15 @@ public class TokenAuthServiceImpl implements TokenAuthService {
     @Autowired
     private TokenUtilService tokenService;
 
+    @Autowired
+    private EmailVerificationService emailVerfication;
+
     public AuthPayload createUser(User user) {
+        emailVerfication.createEmailVerificationToken(user);
+        
         userService.addUser(user);
         String token = tokenService.issueToken(user);
+
 
         return new AuthPayload(token, "Account created successfully");
     }
