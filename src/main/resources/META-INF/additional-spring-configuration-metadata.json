@@ -2,11 +2,11 @@
   {
     "name": "jwt.key",
     "type": "java.lang.String",
-    "description": "A description for 'jwt.key'"
+    "description": "A seret key used for signing and verifying json web tokens'"
   },
   {
-    "name": "jwt.key",
+    "name": "email.verifcation.key",
     "type": "java.lang.String",
-    "description": "A description for 'jwt.key'"
+    "description": "Secret key used for signing and verifying email verification tokens'"
   }
 ]}
