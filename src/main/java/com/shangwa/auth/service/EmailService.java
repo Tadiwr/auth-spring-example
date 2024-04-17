@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.shangwa.auth.entity.User;
 
 import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 
 @Service
@@ -27,11 +28,16 @@ public class EmailService {
         
         String emailText = String.format("""
             <div>
-            <h1>Hello %s!</h1>
+            <h1>Hello there %s!</h1>
+            <p>We are glad to have you on board to complete your registration on the our app please verify that this is your email</p>
             <p>Click the link below to verify your email</p>
-            <a href="%s" >Verify Email</a>
+            <a href="http://localhost:8080/auth/email/verify/?token=%s" >Verify Email</a>
+
+            <p>If this is not your email please click this link
+
+            <a href="http://localhost:8080/auth/email/verify/revoke?token=%s" >Its not me</a>
             </div>
-            """, user.getName(), token);
+            """, user.getName(), token, token);
 
         return emailText;
     }
@@ -43,12 +49,10 @@ public class EmailService {
         MimeMessageHelper emailBuilder = new MimeMessageHelper(email);
         
         emailBuilder.setTo(user.getEmail());
-        emailBuilder.setFrom("noreply@simple.auth.dev");
-        emailBuilder.setSubject("Email Varification Code");
+        emailBuilder.setSubject("Simple Spring Auth | Email Varification Code");
         emailBuilder.setText(generateEmailText(token, user), true);
-        // emailBuilder.setFrom("tshangmgs@gmail.com");
+        emailBuilder.setFrom("codapt@outlook.com");
         emailSender.send(email);
-
     }
 
 }

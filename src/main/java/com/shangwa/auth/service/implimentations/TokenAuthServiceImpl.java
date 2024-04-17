@@ -38,27 +38,28 @@ public class TokenAuthServiceImpl implements TokenAuthService {
 
     public AuthPayload login(LoginCredidentials creds) {
         AuthPayload res = new AuthPayload(null, "Invalid credidentials");
-        Optional<User> user =userService.getUser(creds.email, creds.password);
+        Optional<User> user = userService.getUser(creds.email, creds.password);
         
-        if (user.isPresent()) {
+        if (user.isEmpty()) {
+            return res;
+        }
+        User realUser = user.get();
 
-            User realUser = user.get();
-
-            if (user.get().isVerified()) {
-                res.token = tokenService.issueToken(realUser);
-                res.message = "Logged in successfuly";
-            } else {
-                
-                String emailVerificationToken = emailVerfication.createEmailVerificationToken(realUser);
-                
-                try {
-                    emailVerfication.sendTokenToUserEmail(emailVerificationToken, realUser);
-                    res.message = "Sent Email for verification";
-                } catch (Exception e) {
-                    res.token = "-1";
-                }
-            }
-
+        if (user.get().isVerified()) {
+            res.token = tokenService.issueToken(realUser);
+            res.message = "Logged in successfuly";
+            return res;
+        } 
+            
+        String emailVerificationToken = emailVerfication.createEmailVerificationToken(realUser);
+        
+        try {
+            emailVerfication.sendTokenToUserEmail(emailVerificationToken, realUser);
+            res.token="NOTVERIFIED";
+            res.message = "Sent Email for verification";
+        } catch (Exception e) {
+            e.printStackTrace();
+            res.token = "-1";
         }
 
         return res;
