@@ -1,4 +1,4 @@
-package com.shangwa.auth.service;
+package com.shangwa.auth.service.implimentations;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
@@ -10,18 +10,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.shangwa.auth.entity.User;
-import com.shangwa.auth.lib.exceptions.BadAuthorizationHeader;
+import com.shangwa.auth.lib.exceptions.UnAuthorisedException;
 import com.shangwa.auth.repository.UsersReposity;
+import com.shangwa.auth.service.interfaces.TokenUtilService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
 @Service
-public class JwtService {
-    
-    // private SecretKey key = Jwts.SIG.HS256.key().build();
+public class JwtTokenServiceImpl implements TokenUtilService {
 
     @Autowired
     private UsersReposity userRepo;
@@ -43,7 +41,7 @@ public class JwtService {
         .subject(user.getId().toString())
         .claim("name", user.getName())
         .issuedAt(new Date())
-        .signWith(SignatureAlgorithm.HS512, jwtKey)
+        .signWith(getSecretKey())
         .compact();
 
         return token;
@@ -53,16 +51,16 @@ public class JwtService {
      * 
      * @returns User
      */
-    private User getTokenBearer(Claims claims) {
+    public User getTokenBearer(Claims claims) {
         Long subId = Long.parseLong(claims.get("sub", String.class));
         User user = userRepo.findById(subId).get();
         return user;
     }
 
     /** Attempts to verify a token and return the `User` bearing the token
-     * @throws BadAuthorizationHeader if the token is missing or is invalid
+     * @throws UnAuthorisedException if the token is missing or is invalid
      */
-    public User verifyToken(String token) throws BadAuthorizationHeader {
+    public User verifyToken(String token) throws UnAuthorisedException {
 
         try {
             Object payload = Jwts.parser()
@@ -74,7 +72,7 @@ public class JwtService {
             return getTokenBearer(claims);
             
         } catch (Exception e) {
-            throw new BadAuthorizationHeader();
+            throw new UnAuthorisedException();
         }
         
     }
