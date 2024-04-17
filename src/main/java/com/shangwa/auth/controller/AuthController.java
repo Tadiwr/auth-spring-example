@@ -46,7 +46,14 @@ public class AuthController {
 
     @PostMapping("/create/account")
     public ResponseEntity<AuthPayload> createAccount(@RequestBody User user) {
-        return ResponseEntity.ok(auth.createUser(user));
+
+        AuthPayload payload = auth.createUser(user);
+
+        if (payload.message == null) {
+            return ResponseEntity.internalServerError().build();
+        }
+
+        return ResponseEntity.ok(payload);
     }
 
     @GetMapping("/getUserInfo")

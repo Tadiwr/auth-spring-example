@@ -14,6 +14,8 @@ import com.shangwa.auth.service.interfaces.TokenAuthService;
 import com.shangwa.auth.service.interfaces.TokenUtilService;
 import com.shangwa.auth.service.interfaces.UserService;
 
+import jakarta.mail.MessagingException;
+
 @Service
 public class TokenAuthServiceImpl implements TokenAuthService {
     
@@ -27,13 +29,19 @@ public class TokenAuthServiceImpl implements TokenAuthService {
     private EmailVerificationService emailVerfication;
 
     public AuthPayload createUser(User user) {
-        emailVerfication.createEmailVerificationToken(user);
 
+        String emailToken = emailVerfication.createEmailVerificationToken(user);
+
+        try {
+            emailVerfication.sendTokenToUserEmail(emailToken, user);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            return new AuthPayload(null, null);
+        }
+        
         userService.addUser(user);
-        String token = tokenService.issueToken(user);
 
-
-        return new AuthPayload(token, "Account created successfully");
+        return new AuthPayload(null, "Verify Your Account");
     }
 
     public AuthPayload login(LoginCredidentials creds) {
