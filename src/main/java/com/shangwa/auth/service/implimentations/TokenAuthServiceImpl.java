@@ -38,7 +38,7 @@ public class TokenAuthServiceImpl implements TokenAuthService {
             e.printStackTrace();
             return new AuthPayload(null, null);
         }
-        
+
         userService.addUser(user);
 
         return new AuthPayload(null, "Verify Your Account");
@@ -75,6 +75,17 @@ public class TokenAuthServiceImpl implements TokenAuthService {
 
     public User verifyRequest(String authToken) throws UnAuthorisedException {
         return tokenService.verifyToken(authToken);
+    }
+
+    public boolean verifyUserEmail(String token) {
+        Optional<User> user = emailVerfication.verifyEmailToken(token);
+        
+        if(user.isPresent()) {
+            user.get().setVerified(true);
+            return true;
+        }
+
+        return false;
     }
 
 }

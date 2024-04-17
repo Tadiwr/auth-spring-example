@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RestController
@@ -68,6 +70,18 @@ public class AuthController {
 
         return auth.verifyRequest(token);
     }
+
+    @GetMapping("/email/verify")
+    public String getMethodName(@RequestParam String token) {
+
+        if (auth.verifyUserEmail(token)) {
+            return "Email verified!";
+        } else {
+            return "Invalid Email Verification Link";
+        }
+
+    }
+    
     
 
 }
