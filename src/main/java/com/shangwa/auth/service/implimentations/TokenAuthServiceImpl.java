@@ -81,7 +81,13 @@ public class TokenAuthServiceImpl implements TokenAuthService {
         Optional<User> user = emailVerfication.verifyEmailToken(token);
         
         if(user.isPresent()) {
+
+            if (user.get().isVerified()) {
+                return false;
+            }
+
             user.get().setVerified(true);
+            userService.saveUser(user.get());
             return true;
         }
 

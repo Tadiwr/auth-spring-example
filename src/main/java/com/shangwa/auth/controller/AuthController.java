@@ -77,7 +77,7 @@ public class AuthController {
         if (auth.verifyUserEmail(token)) {
             return "Email verified!";
         } else {
-            return "Invalid Email Verification Link";
+            return "Email Verification link is not valid anymore";
         }
 
     }

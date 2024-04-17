@@ -9,5 +9,5 @@ public interface UserService {
     public User addUser(User user);
     public Optional<User> getUser(String email, String password);
     public boolean userExists(String email, String password);
-    
+    public void saveUser(User user);
 }
