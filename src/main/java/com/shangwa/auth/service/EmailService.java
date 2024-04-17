@@ -31,11 +31,9 @@ public class EmailService {
             <h1>Hello there %s!</h1>
             <p>We are glad to have you on board to complete your registration on the our app please verify that this is your email</p>
             <p>Click the link below to verify your email</p>
-            <a href="http://localhost:8080/auth/email/verify/?token=%s" >Verify Email</a>
+            <a href="http://localhost:8080/auth/email/verify?token=%s" >Verify Email</a>
 
-            <p>If this is not your email please click this link
-
-            <a href="http://localhost:8080/auth/email/verify/revoke?token=%s" >Its not me</a>
+            <p>If you did not sign up to our platform just ignore or delete this email</p>
             </div>
             """, user.getName(), token, token);
 

@@ -1,5 +1,7 @@
 package com.shangwa.auth.service.interfaces;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import com.shangwa.auth.entity.User;
@@ -18,6 +20,6 @@ public interface EmailVerificationService {
     public void sendTokenToUserEmail(String token, User user) throws MessagingException;
 
     /** Takes in an email verification token and verifies and validates it */
-    public boolean verifyEmailToken(String token);
+    public Optional<User> verifyEmailToken(String token);
 
 }

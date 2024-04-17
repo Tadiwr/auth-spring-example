@@ -2,6 +2,7 @@ package com.shangwa.auth.service.implimentations;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.Optional;
 
 import javax.crypto.SecretKey;
 
@@ -10,9 +11,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.shangwa.auth.entity.User;
+import com.shangwa.auth.repository.UsersReposity;
 import com.shangwa.auth.service.EmailService;
 import com.shangwa.auth.service.interfaces.EmailVerificationService;
+import com.shangwa.auth.service.interfaces.UserService;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.mail.MessagingException;
@@ -27,6 +31,9 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
 
     @Autowired
     private EmailService emailService; 
+
+    @Autowired
+    private UsersReposity userRepo;
 
     public String createEmailVerificationToken(User user)  {
 
@@ -54,9 +61,31 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
         emailService.sendVerficationEmail(token, user);
     }
 
-    public boolean verifyEmailToken(String token) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'verifyEmailToken'");
+    public Optional<User> verifyEmailToken(String token) {
+
+        try {
+            Object payload = Jwts.parser()
+            .verifyWith(getKey())
+            .build()
+            .parse(token).getPayload();
+    
+            Claims claims = (Claims) payload;
+            Date expiry = claims.getExpiration();
+    
+            // check time
+            if (new Date().after(expiry)) {
+                return null;
+            }
+
+            // get the user
+            String email = claims.getSubject();
+
+            return userRepo.findByEmail(email);
+
+        } catch (Exception e) {
+            return null;
+        }
+
     }
 
     /** Generates a secret key for usng the Advanced Encryption Standard */
